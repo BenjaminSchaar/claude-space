@@ -1,0 +1,18 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "room",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "port": 8767
+    },
+    {
+      "name": "quiet-tide",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "cwd": "vision-2046",
+      "port": 8766
+    }
+  ]
+}

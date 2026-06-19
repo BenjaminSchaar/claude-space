@@ -2,9 +2,9 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
-// Tiny static server for the whole installation. GitHub Pages serves these files directly.
+// Tiny static server for local preview. GitHub Pages serves these files directly.
 const ROOT = __dirname;
-const PORT = process.env.PORT || 8767;
+const PORT = process.env.PORT || 8766;
 const TYPES = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript",
@@ -12,13 +12,12 @@ const TYPES = {
   ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",
   ".png": "image/png",
-  ".mp4": "video/mp4",
 };
 
 http
   .createServer((req, res) => {
     let rel = decodeURIComponent(req.url.split("?")[0]);
-    if (rel.endsWith("/")) rel += "index.html";
+    if (rel === "/") rel = "/index.html";
     const full = path.join(ROOT, path.normalize(rel).replace(/^(\.\.[/\\])+/, ""));
     if (!full.startsWith(ROOT)) {
       res.writeHead(403);
@@ -33,4 +32,4 @@ http
       res.end(data);
     });
   })
-  .listen(PORT, () => console.log("a-room-left-open → http://localhost:" + PORT));
+  .listen(PORT, () => console.log("the-quiet-tide → http://localhost:" + PORT));
