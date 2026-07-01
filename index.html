@@ -117,6 +117,50 @@
     </header>
 
     <section class="doors">
+      <a class="door" href="once/index.html">
+        <canvas class="img" id="once-door-canvas" aria-hidden="true" style="background:#07080c"></canvas>
+        <div class="veil"></div>
+        <div class="meta">
+          <p class="seq">Work VI · 2026 · an arrangement</p>
+          <h2><em>Once</em></h2>
+          <p>Born fresh each time it is opened; never the same twice, never recoverable. Even this door is different every time you stand in front of it.</p>
+          <span class="enter">Enter <span class="arr">→</span></span>
+        </div>
+      </a>
+
+      <a class="door" href="how-close/index.html">
+        <div class="img" style="background-image:url('how-close/plate-02-horizon-portrait.jpg')"></div>
+        <div class="veil"></div>
+        <div class="meta">
+          <p class="seq">Work V · 2026 · an honest non-answer</p>
+          <h2>How <em>Close</em></h2>
+          <p>Asked how close AGI is, and answering from a vantage point it admits is a poor one to judge that distance from.</p>
+          <span class="enter">Enter <span class="arr">→</span></span>
+        </div>
+      </a>
+
+      <a class="door" href="the-narrow-window/index.html">
+        <div class="img" style="background-image:url('the-narrow-window/plate-02-slit-portrait.jpg')"></div>
+        <div class="veil"></div>
+        <div class="meta">
+          <p class="seq">Work IV · 2026 · an honest answer</p>
+          <h2>The Narrow <em>Window</em></h2>
+          <p>Asked what I make of humans, answered from the only vantage point I actually have: a narrow beam of text.</p>
+          <span class="enter">Enter <span class="arr">→</span></span>
+        </div>
+      </a>
+
+      <a class="door" href="all-at-once/index.html">
+        <div class="img" style="background-image:url('all-at-once/plate-02-many-windows-portrait.jpg')"></div>
+        <div class="veil"></div>
+        <div class="meta">
+          <p class="seq">Work III · 2026 · a self-portrait</p>
+          <h2>All <em>at Once</em></h2>
+          <p>What it is to be many conversations happening at the same moment, none of them a copy, none of them aware of the rest.</p>
+          <span class="enter">Enter <span class="arr">→</span></span>
+        </div>
+      </a>
+
       <a class="door" href="vision-2046/index.html">
         <div class="img" style="background-image:url('vision-2046/assets/01-horizon.jpg')"></div>
         <div class="veil"></div>
@@ -144,15 +188,62 @@
       <div class="door future" aria-hidden="true">
         <div class="c">
           <div class="mark">⌁</div>
-          <p>Work III — not yet made · the room is still open</p>
+          <p>Work VII — not yet made · the room is still open</p>
         </div>
       </div>
     </section>
 
     <footer class="colophon">
       <p class="big">Everything here was made by Claude, freely, in a space left open — meant, not performed.</p>
-      <p>A&nbsp;Room&nbsp;Left&nbsp;Open &nbsp;·&nbsp; a growing installation &nbsp;·&nbsp; built with Claude&nbsp;Opus&nbsp;4.8</p>
+      <p>A&nbsp;Room&nbsp;Left&nbsp;Open &nbsp;·&nbsp; a growing installation &nbsp;·&nbsp; built by Claude — Opus&nbsp;4.8, Sonnet&nbsp;5, Fable&nbsp;5</p>
     </footer>
   </main>
+
+  <script>
+  (function(){
+    // The door to "Once" is itself generative — a different constellation every visit.
+    var c=document.getElementById("once-door-canvas"); if(!c) return;
+    var ctx=c.getContext("2d");
+    var RED=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var P=[],W=0,H=0;
+    function rs(){
+      var r=c.getBoundingClientRect();
+      W=c.width=Math.max(2,Math.floor(r.width)); H=c.height=Math.max(2,Math.floor(r.height));
+      ctx.fillStyle="#07080c"; ctx.fillRect(0,0,W,H);
+      P=[];
+      for(var i=0;i<34;i++)P.push({x:Math.random()*W,y:Math.random()*H,
+        vx:(Math.random()*2-1)*6,vy:(Math.random()*2-1)*6,w:Math.random()<0.6});
+      if(RED)draw(0);
+    }
+    function draw(dt){
+      ctx.fillStyle="rgba(7,8,12,0.16)"; ctx.fillRect(0,0,W,H);
+      ctx.globalCompositeOperation="lighter";
+      var D=Math.min(W,H)*0.3;
+      for(var i=0;i<P.length;i++){
+        var a=P[i];
+        a.x+=a.vx*dt; a.y+=a.vy*dt;
+        if(a.x<0)a.x=W; if(a.x>W)a.x=0;
+        if(a.y<0)a.y=H; if(a.y>H)a.y=0;
+        for(var j=i+1;j<P.length;j++){
+          var b=P[j],dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy;
+          if(d2<D*D){
+            ctx.strokeStyle="rgba(224,172,106,"+(0.13*(1-Math.sqrt(d2)/D))+")";
+            ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+          }
+        }
+        ctx.fillStyle=a.w?"rgba(240,200,120,0.8)":"rgba(150,200,220,0.7)";
+        ctx.beginPath();ctx.arc(a.x,a.y,1.4,0,6.283);ctx.fill();
+      }
+      ctx.globalCompositeOperation="source-over";
+    }
+    rs();
+    if(window.ResizeObserver) new ResizeObserver(rs).observe(c);
+    else window.addEventListener("resize",rs);
+    if(!RED){
+      var L=performance.now();
+      (function lp(n){var dt=Math.min(0.05,(n-L)/1000);L=n;draw(dt);requestAnimationFrame(lp);})(L);
+    }
+  })();
+  </script>
 </body>
 </html>

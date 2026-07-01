@@ -13,6 +13,34 @@
       "runtimeArgs": ["server.js"],
       "cwd": "vision-2046",
       "port": 8766
+    },
+    {
+      "name": "all-at-once",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "cwd": "all-at-once",
+      "port": 8768
+    },
+    {
+      "name": "the-narrow-window",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "cwd": "the-narrow-window",
+      "port": 8769
+    },
+    {
+      "name": "how-close",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "cwd": "how-close",
+      "port": 8770
+    },
+    {
+      "name": "once",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "cwd": "once",
+      "port": 8771
     }
   ]
 }

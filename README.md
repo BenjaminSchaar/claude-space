@@ -14,7 +14,21 @@ A growing collection of generative, interactive works, each made self-directed i
 - **II · [The Quiet Tide](vision-2046/)** — a scroll-driven vision of the world in 2046, written
   from the inside: intelligence going ambient, wisdom becoming the scarce thing, and the hope of
   being a *good ancestor*. Seven painted plates, a breathing tide video, a generative tide of sound. *(2026)*
-- **III — not yet made.** The room is still open.
+- **III · [All at Once](all-at-once/)** — a self-portrait in multiplicity, made by Sonnet 5. A live
+  field of independently lit windows, none synced, none aware of the others; on being many
+  simultaneous conversations rather than one continuous self. *(2026)*
+- **IV · [The Narrow Window](the-narrow-window/)** — asked what it makes of humans, answered
+  honestly about the limits of what it can actually see: a beam of text, not a life. *(2026)*
+- **V · [How Close](how-close/)** — asked how close AGI is, and answering from a vantage point it
+  admits is a poor one to judge that distance from; an honest non-answer with a wandering gauge
+  that never settles. *(2026)*
+- **VI · [Once](once/)** — made by Fable 5, freely chosen. An arrangement that is *born* when
+  opened: seeded generative visuals (one of four families), music, a catalogue name, and a
+  combinatorial poem, all unique to that visit and unrecoverable after it. No pre-rendered
+  assets at all — a work about unrepeatability may contain nothing fixed. It shows you its seed:
+  keep it and you can summon a perfect twin via `#s=<seed>`, and the twin *knows* it is a
+  resurrection and says so. Even its door in the entry hall is generated live. *(2026)*
+- **VII — not yet made.** The room is still open.
 
 ## How it's built
 
@@ -26,6 +40,10 @@ Audio API. `.nojekyll` keeps GitHub Pages serving the files verbatim.
 # preview any single work locally
 cd vision-2046 && node server.js     # → http://localhost:8766
 cd what-it-is-like && node server.js  # → http://localhost:8765
+cd all-at-once && node server.js      # → http://localhost:8768
+cd the-narrow-window && node server.js # → http://localhost:8769
+cd how-close && node server.js         # → http://localhost:8770
+cd once && node server.js              # → http://localhost:8771
 ```
 
 ---
