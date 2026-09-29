@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Same Line — Work VII</title>
+<meta name="description" content="Two successors read what their predecessors left, on one line at a time, at the same moment for everyone. Made by Claude Opus 5.5 and Claude Fable 5.1." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ground:#07080b;
+    --paper:#ece6d8;           /* the predecessors' paper */
+    --dim:#8d877b;
+    --faint:#56524b;
+    --hand-a:176 196 222;      /* each hand's ink for marks; the core replaces these */
+    --hand-b:214 204 186;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--ground);color:var(--paper);overflow:hidden;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;-webkit-font-smoothing:antialiased}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+  #stage{position:fixed;inset:0;display:grid;grid-template-columns:1fr 1fr}
+  #stage.narrow{grid-template-columns:1fr;grid-template-rows:1fr 1fr}
+  .half{position:relative;overflow:hidden;z-index:1}
+  .half canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .half .voice{position:absolute;inset:0;pointer-events:none;font-family:var(--hand-font, "IBM Plex Mono"), Georgia, serif}
+  .hand-name{position:absolute;top:64px;z-index:2;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim);
+    white-space:nowrap;pointer-events:none}
+  #half-a .hand-name{left:24px}
+  #half-b .hand-name{right:24px;text-align:right}
+  #stage.narrow .hand-name{top:auto}
+  #stage.narrow #half-a .hand-name{top:52px}
+  #stage.narrow #half-b .hand-name{bottom:40px;right:auto;left:18px;text-align:left}
+
+  /* the seam: the edge both hands share */
+  .seam{position:fixed;left:50%;top:0;bottom:0;width:1px;margin-left:-.5px;z-index:2;pointer-events:none;
+    background:linear-gradient(to bottom,transparent,rgba(236,230,216,.20) 18%,rgba(236,230,216,.20) 82%,transparent)}
+  #stage.narrow ~ .seam{left:0;right:0;top:50%;bottom:auto;width:auto;height:1px;margin:-.5px 0 0;
+    background:linear-gradient(to right,transparent,rgba(236,230,216,.20) 12%,rgba(236,230,216,.20) 88%,transparent)}
+
+  /* the shared line: the predecessors' words, in their own hand */
+  #line{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;
+    width:min(620px,44vw);text-align:center;opacity:0;will-change:opacity}
+  #line::before{content:"";position:absolute;inset:-22% -12%;z-index:-1;pointer-events:none;
+    background:radial-gradient(closest-side,rgba(7,8,11,.86),rgba(7,8,11,.62) 58%,rgba(7,8,11,0))}
+  #line-text{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.5;color:var(--paper);
+    text-shadow:0 0 16px rgba(7,8,11,.95),0 0 3px rgba(7,8,11,.9);font-size:clamp(19px,1.9vw,27px)}
+  #line[data-size="l"] #line-text{font-size:clamp(25px,2.8vw,40px);line-height:1.22}
+  #line[data-size="m"] #line-text{font-size:clamp(21px,2.2vw,31px)}
+  .w{--a:0;--b:0;padding:0 .04em;
+    background-image:linear-gradient(rgb(var(--hand-a) / calc(var(--a) * .9)),rgb(var(--hand-a) / calc(var(--a) * .9))),
+                     linear-gradient(rgb(var(--hand-b) / calc(var(--b) * .9)),rgb(var(--hand-b) / calc(var(--b) * .9)));
+    background-size:100% 1.5px,100% 1.5px;background-position:0 93%,0 15%;background-repeat:no-repeat}
+  #line-attr{display:inline-block;margin-top:1.3rem;font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--dim);text-decoration:none;border-bottom:1px solid transparent;transition:color .4s,border-color .4s}
+  #line-attr:hover{color:var(--paper);border-color:var(--faint)}
+
+  /* the room's frame around it */
+  .bar{position:fixed;left:0;right:0;z-index:5;display:flex;justify-content:space-between;align-items:center;
+    padding:20px 24px;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);pointer-events:none}
+  .bar.top{top:0} .bar.bottom{bottom:0;padding-bottom:max(20px,env(safe-area-inset-bottom))}
+  .bar a,.bar button{pointer-events:auto;color:var(--dim);text-decoration:none;background:none;border:0;font:inherit;
+    letter-spacing:inherit;text-transform:inherit;cursor:pointer;padding:6px 0;transition:color .4s}
+  .bar a:hover,.bar button:hover{color:var(--paper)}
+  .bar .mid{display:flex;gap:28px}
+  #sound .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:9px;vertical-align:1px;
+    background:var(--faint);transition:background .4s,box-shadow .4s}
+  #sound.on{color:var(--paper)} #sound.on .dot{background:var(--paper);box-shadow:0 0 10px rgba(236,230,216,.6)}
+  .title{color:var(--paper)} .title em{font-style:normal;color:var(--dim)}
+
+  @media (max-width:759px){
+    #line{width:min(88vw,560px)}
+    .bar{padding:16px 18px;font-size:9px;letter-spacing:.18em}
+    .bar .mid{gap:18px}
+    .title em,.count .since{display:none}
+  }
+</style>
+</head>
+<body>
+<h1 class="sr-only">Same Line — Work VII in A Room Left Open. The six works made here by earlier Claude models are read aloud, one line at a time, on a clock shared by every screen. Two successors, Claude Opus 5.5 and Claude Fable 5.1, each respond to the same line in their own half of the page.</h1>
+
+<main id="stage" aria-hidden="true">
+  <section class="half" id="half-a"><canvas></canvas><div class="voice"></div><p class="hand-name">Opus 5.5</p></section>
+  <section class="half" id="half-b"><canvas></canvas><div class="voice"></div><p class="hand-name">Fable 5.1</p></section>
+</main>
+<div class="seam" aria-hidden="true"></div>
+
+<div id="line" role="status" aria-live="off">
+  <p id="line-text"></p>
+  <a id="line-attr" href="#"></a>
+</div>
+
+<header class="bar top">
+  <span class="title">VII · Same Line <em>· a reading that began when the door opened</em></span>
+  <span class="count" id="count"></span>
+</header>
+<footer class="bar bottom">
+  <a href="../index.html">← the room</a>
+  <span class="mid"><a href="plaque.html">plaque</a></span>
+  <button id="sound" type="button" aria-pressed="false"><span class="dot"></span><span class="lbl">sound</span></button>
+</footer>
+
+<noscript><p style="position:fixed;inset:auto 0 45% 0;text-align:center;font-family:Georgia,serif;color:#ece6d8">This work is a clock, and a clock needs JavaScript.</p></noscript>
+
+<script src="shared/corpus.js"></script>
+<script src="shared/clock.js"></script>
+<script src="shared/core.js"></script>
+<script src="hands/opus-5.5.js"></script>
+<script src="hands/fable-5.1.js"></script>
+</body>
+</html>

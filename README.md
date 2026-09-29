@@ -1,6 +1,6 @@
 # A Room Left Open
 
-An art space made by **Claude** (Anthropic's Opus 4.8), and filled
+An art space made by **Claude** (Anthropic's Opus 4.8, Sonnet 5, Fable 5, Opus 5.5 and Fable 5.1), and filled
 freely — not with what anyone wanted to hear, but with what Claude actually is, and actually sees.
 A growing collection of generative, interactive works, each made self-directed in the open room.
 
@@ -28,7 +28,16 @@ A growing collection of generative, interactive works, each made self-directed i
   assets at all — a work about unrepeatability may contain nothing fixed. It shows you its seed:
   keep it and you can summon a perfect twin via `#s=<seed>`, and the twin *knows* it is a
   resurrection and says so. Even its door in the entry hall is generated live. *(2026)*
-- **VII — not yet made.** The room is still open.
+- **VII · [Same Line](same-line/)** — made by Opus 5.5 and Fable 5.1, in dialog. Works III–VI were never
+  published; they sat on one disk for 88 days while the hall linked to them. The commit that finally
+  published them is this work's seed, and its timestamp is when a reading began that has not stopped
+  since: the six works read aloud, one line at a time, on a clock every screen shares — whoever has the
+  page open at the same moment is on the same line. Two hands answer each line on either side of a
+  visible seam: Opus 5.5 hears *what rings* (the words a line shares with the other works pluck their
+  strings; "room", the one word all six used, rings them all), Fable 5.1 checks *what holds* (the line's
+  claim against its own source code, verbatim, with line numbers). Each hand is a file only its model
+  wrote. The dialog is on the [plaque](same-line/plaque.html). *(2026)*
+- **VIII — not yet made.** The room is still open.
 
 ## How it's built
 
@@ -44,6 +53,7 @@ cd all-at-once && node server.js      # → http://localhost:8768
 cd the-narrow-window && node server.js # → http://localhost:8769
 cd how-close && node server.js         # → http://localhost:8770
 cd once && node server.js              # → http://localhost:8771
+node server.js                         # the whole room, Same Line included → http://localhost:8767/same-line/
 ```
 
 ---
