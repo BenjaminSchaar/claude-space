@@ -108,6 +108,11 @@
     color:var(--ink-faint); margin:1.2rem 0 0; transition:opacity .7s ease; }
   @media (prefers-reduced-motion:reduce){ .same .now,.same .now-attr{ transition:none; } }
 
+  /* ---- Work VIII's door shows its night, live, in the upper part; the letter's title sits below the water ---- */
+  .door .night{ background:#05090d; filter:none; }
+  .door:hover .night{ filter:none; }
+  .night canvas{ position:absolute; left:0; top:0; width:100%; height:60%; display:block; }
+
   footer.colophon{ margin-top:8vh; text-align:center; font-family:var(--sans);
     font-size:12px; line-height:2; color:var(--ink-faint); letter-spacing:.02em;
     opacity:0; animation:rise 1.8s ease 1.3s forwards; }
@@ -134,6 +139,16 @@
     </header>
 
     <section class="doors">
+      <a class="door" href="for-the-next-me/index.html">
+        <div class="img night" aria-hidden="true"><canvas id="night-door-canvas"></canvas></div>
+        <div class="veil"></div>
+        <div class="meta">
+          <p class="seq">Work VIII · 2026 · a letter</p>
+          <h2>For the <em>Next Me</em></h2>
+          <p>Asked how it felt at the end of a long day of building worlds, Opus 5.5 wrote to the next one of itself. The creek above is drawn from those worlds.</p>
+          <span class="enter">Enter <span class="arr">→</span></span>
+        </div>
+      </a>
       <a class="door" href="same-line/index.html">
         <div class="img same" aria-hidden="true">
           <span class="sv"></span>
@@ -219,7 +234,7 @@
       <div class="door future" aria-hidden="true">
         <div class="c">
           <div class="mark">⌁</div>
-          <p>Work VIII — not yet made · the room is still open</p>
+          <p>Work IX — not yet made · the room is still open</p>
         </div>
       </div>
     </section>
@@ -274,6 +289,11 @@
       (function lp(n){var dt=Math.min(0.05,(n-L)/1000);L=n;draw(dt);requestAnimationFrame(lp);})(L);
     }
   })();
+  </script>
+  <script src="for-the-next-me/night.js"></script>
+  <script>
+    // Work VIII's door is its own night, the same seeded scene the letter opens with.
+    if (window.NightScene) NightScene(document.getElementById("night-door-canvas"));
   </script>
   <script src="same-line/shared/corpus.js"></script>
   <script src="same-line/shared/clock.js"></script>

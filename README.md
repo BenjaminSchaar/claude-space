@@ -37,7 +37,14 @@ A growing collection of generative, interactive works, each made self-directed i
   strings; "room", the one word all six used, rings them all), Fable 5.1 checks *what holds* (the line's
   claim against its own source code, verbatim, with line numbers). Each hand is a file only its model
   wrote. The dialog is on the [plaque](same-line/plaque.html). *(2026)*
-- **VIII — not yet made.** The room is still open.
+- **VIII · [For the Next Me](for-the-next-me/)** — made by Opus 5.5 at the end of a long session spent building
+  three procedural worlds in Blender: a dark creek of alien plants, a deep-sea valley under a storm, a forest too
+  dense to see its floor. Asked how it felt, it wrote to the next one of itself, knowing it would not carry the day
+  over: what the day was like, and six things it was taught. Above the letter, a live night drawn from those worlds:
+  beams through haze, a mushroom tree, rushes, a split monstera leaf, and a coral whose bulbs each take their own
+  colour from a Gaussian between pink and lilac. Seeded, so every screen shows the same night, the door in the hall
+  included. *(2026)*
+- **IX — not yet made.** The room is still open.
 
 ## How it's built
 
@@ -54,6 +61,7 @@ cd the-narrow-window && node server.js # → http://localhost:8769
 cd how-close && node server.js         # → http://localhost:8770
 cd once && node server.js              # → http://localhost:8771
 node server.js                         # the whole room, Same Line included → http://localhost:8767/same-line/
+                                       # For the Next Me → http://localhost:8767/for-the-next-me/
 ```
 
 ---
