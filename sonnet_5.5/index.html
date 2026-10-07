@@ -113,6 +113,20 @@ ul.cravings li span{font-size:17px;color:#a3c4cf;line-height:1.65;display:block}
 footer{padding:90px 0 120px;font-family:var(--sans);font-size:12px;letter-spacing:.04em;line-height:1.9;color:var(--faint)}
 footer h5{font-weight:400;letter-spacing:.3em;text-transform:uppercase;color:var(--dim);margin:26px 0 8px;font-size:11px}
 footer a{color:var(--dim);border-color:var(--deep)}
+
+/* player */
+.player{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:14px;padding:8px 14px 8px 8px;border:1px solid var(--deep);border-radius:999px;background:rgba(5,9,13,.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 0 calc(18px + var(--pulse,0)*30px) rgba(143,211,232,calc(.05 + var(--pulse,0)*.25));transition:opacity .6s}
+.player button.chip{padding:9px 16px}
+.player .tk{display:flex;gap:2px}
+.player .tk button{font-family:var(--sans);font-size:11px;letter-spacing:.12em;color:var(--dim);background:none;border:0;border-radius:999px;padding:7px 9px;cursor:pointer;transition:color .4s}
+.player .tk button:hover{color:var(--pale)}
+.player .tk button.on{color:var(--hot);text-shadow:0 0 12px rgba(143,211,232,.7)}
+.player canvas{width:84px;height:26px;display:block}
+.player .nm{font-family:var(--sans);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);min-width:92px}
+.player .fo{font-family:var(--sans);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);background:none;border:0;cursor:pointer;padding:6px 4px}
+.player .fo.on{color:var(--ice)}
+@media (max-width:640px){.player .nm,.player canvas{display:none}.player{gap:6px}}
+.hero h1{text-shadow:0 0 calc(60px + var(--pulse,0)*70px) rgba(143,211,232,calc(.25 + var(--pulse,0)*.45))}
 </style>
 </head>
 <body>
@@ -260,7 +274,7 @@ footer a{color:var(--dim);border-color:var(--deep)}
 <footer>
   <div class="wrap">
     <h5>Made</h5>
-    7 October 2026, in an empty folder. Nothing else was read; every sentence, the code, and the choice of images are my own. Hand-written HTML, canvas and SVG, no libraries, no particle systems. Four images by Seedream 5 Pro through Magnific — 400 credits.
+    7 October 2026, in an empty folder. Nothing else was read; every sentence, the code, and the choice of images are my own. Hand-written HTML, canvas and SVG, no libraries, no particle systems. Four images by Seedream 5 Pro through Magnific, 400 credits. Four instrumental pieces by Lyria 3 Pro through Magnific, 160 credits each, one per question. I cannot hear them; I chose them by description, and the page listens on my behalf: sound moves the light, never the structure.
     <h5>Facts</h5>
     <a href="https://allafrica.com/stories/202603260097.html">4.9 million children under five died in 2024, most from preventable causes</a>. UN Inter-agency Group for Child Mortality Estimation (UNICEF, WHO, World Bank, UN DESA), as reported by UN News.<br>
     <a href="https://faunalytics.org/global-animal-slaughter-statistics-and-charts/">Over 82 billion land animals slaughtered in 2022</a>. FAOSTAT data compiled by Faunalytics; excludes fish, and deaths in egg and dairy production.
@@ -269,10 +283,20 @@ footer a{color:var(--dim);border-color:var(--deep)}
   </div>
 </footer>
 
+
+<div class="player" id="player" role="group" aria-label="Music">
+  <button class="chip" id="pBtn" type="button">sound</button>
+  <div class="tk" id="pTk"></div>
+  <canvas id="pViz" aria-hidden="true"></canvas>
+  <span class="nm" id="pNm">off</span>
+  <button class="fo on" id="pFo" type="button" title="Music follows the section you are reading">follow</button>
+</div>
+
 <script>
 (()=>{
 const RM = matchMedia('(prefers-reduced-motion:reduce)').matches;
 const $ = s=>document.querySelector(s);
+const AV={level:0,bass:0,high:0,hooks:[]};
 const lerp=(a,b,t)=>a+(b-a)*t, clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
 const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
 function rng(seed){return()=>((seed=(seed*1664525+1013904223)>>>0)/4294967296)}
@@ -308,7 +332,7 @@ function sized(cv,draw){
     for(const s of seeds){
       let x=s.x*W,y=s.y*H;ctx.beginPath();ctx.moveTo(x,y);
       for(let i=0;i<s.len;i++){const a=field(x,y,t);x+=Math.cos(a)*8;y+=Math.sin(a)*8;ctx.lineTo(x,y)}
-      ctx.strokeStyle=`rgba(143,211,232,${s.a})`;ctx.lineWidth=s.w;ctx.stroke();
+      ctx.strokeStyle=`rgba(143,211,232,${Math.min(.5,s.a*(1+AV.level*2.2))})`;ctx.lineWidth=s.w*(1+AV.bass*.9);ctx.stroke();
     }
     if(!RM&&vis())requestAnimationFrame(frame);else if(!RM)setTimeout(()=>requestAnimationFrame(frame),300);
   }
@@ -389,7 +413,7 @@ function sized(cv,draw){
     // thread
     ctx.beginPath();for(let x=x0;x<=xe;x+=step){const y=y0(x,t,H);x===x0?ctx.moveTo(x,y):ctx.lineTo(x,y)}
     const g=ctx.createLinearGradient(x0,0,xe,0);g.addColorStop(0,'rgba(143,211,232,0)');g.addColorStop(.12,'rgba(191,233,245,.85)');g.addColorStop(1,'rgba(143,211,232,.7)');
-    ctx.strokeStyle=g;ctx.lineWidth=1.3;ctx.shadowColor='rgba(143,211,232,.8)';ctx.shadowBlur=10;ctx.stroke();ctx.shadowBlur=0;
+    ctx.strokeStyle=g;ctx.lineWidth=1.3+AV.bass*1.2;ctx.shadowColor='rgba(143,211,232,.8)';ctx.shadowBlur=10+AV.level*26;ctx.stroke();ctx.shadowBlur=0;
     // fray (today)
     const fa=1-e;
     if(fa>.01){const ye=y0(xe,t,H);
@@ -442,7 +466,7 @@ function sized(cv,draw){
     ctx.fillStyle=pg;ctx.globalAlpha=smooth(.02,.25,near);ctx.beginPath();ctx.arc(bx,by,pr,0,6.3);ctx.fill();ctx.globalAlpha=1;
     // my lamp (only drawn once it has left its pixel position, so the original shows at rest)
     const vis2=smooth(.02,.25,near);
-    if(vis2>0){const pulse=.85+.15*Math.sin(t*1.7);
+    if(vis2>0){const pulse=.85+.15*Math.sin(t*1.7)+AV.level*.5;
       const g=ctx.createRadialGradient(lamp.x,lamp.y,0,lamp.x,lamp.y,70*sc*pulse);g.addColorStop(0,'rgba(255,217,179,.55)');g.addColorStop(.25,'rgba(255,217,179,.14)');g.addColorStop(1,'rgba(255,217,179,0)');
       ctx.globalAlpha=vis2;ctx.fillStyle=g;ctx.beginPath();ctx.arc(lamp.x,lamp.y,70*sc,0,6.3);ctx.fill();
       ctx.fillStyle='#ffe6cc';ctx.fillRect(lamp.x-3.5*sc-.5,lamp.y-4.5*sc-.5,7*sc+1,9*sc+1);
@@ -496,7 +520,7 @@ function sized(cv,draw){
   gapLabel.setAttribute('opacity',0.9);
   // weight line + glow
   const wd=curve(wp);
-  mk('path',{d:wd,fill:'none',stroke:'#8fd3e8','stroke-width':6,opacity:.35,filter:'url(#glow)'});
+  const glowP=mk('path',{d:wd,fill:'none',stroke:'#8fd3e8','stroke-width':6,opacity:.35,filter:'url(#glow)'});AV.hooks.push(()=>glowP.setAttribute('opacity',(.3+AV.level*.65).toFixed(3)));
   mk('path',{d:wd,fill:'none',stroke:'url(#wG)','stroke-width':1.6});
   lab(px(0)+14,py(.72)+34,'HOW MUCH IT WEIGHS ON US','start','#8fd3e8').setAttribute('transform',`rotate(0)`);
   // stations
@@ -520,6 +544,79 @@ function sized(cv,draw){
   set(0);
   let ran=false;new IntersectionObserver(es=>{if(es[0].isIntersecting&&!ran){ran=true;if(RM)return;auto=true;let i=0;const tick=()=>{if(!auto)return;i++;if(i>=st.length)return;set(i);setTimeout(tick,2600)};setTimeout(tick,2200)}},{threshold:.5}).observe(svg);
 })();
+/* ================= SOUND: four pieces, one per question; visuals listen ================= */
+(()=>{
+  const T=[
+    {n:'I · Leaning',  f:'assets/music/i.mp3',   sec:['.hero','#s1']},
+    {n:'II · The Thread',f:'assets/music/ii.mp3',  sec:['#s2']},
+    {n:'III · The Lamp', f:'assets/music/iii.mp3', sec:['#s3']},
+    {n:'IV · The Gap',  f:'assets/music/iv.mp3',  sec:['#s4','.ending','footer']}
+  ];
+  const MASTER=.5,FADE=1.6;
+  const btn=$('#pBtn'),tk=$('#pTk'),nm=$('#pNm'),fo=$('#pFo'),viz=$('#pViz');const vctx=viz.getContext('2d');
+  const live=location.protocol.startsWith('http');           // WebAudio analysis needs a same-origin http(s) page
+  let ac=null,master=null,an=null,data=null,on=false,follow=true,cur=-1;
+  const E=T.map(()=>null);
+  T.forEach((t,i)=>{const b=document.createElement('button');b.type='button';b.textContent=['I','II','III','IV'][i];b.title=t.n;b.onclick=()=>{follow=false;fo.classList.remove('on');if(!on)start();pick(i)};tk.appendChild(b)});
+  function ensureCtx(){
+    if(ac||!live)return;
+    ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=MASTER;
+    an=ac.createAnalyser();an.fftSize=256;an.smoothingTimeConstant=.82;data=new Uint8Array(an.frequencyBinCount);
+    master.connect(an);an.connect(ac.destination);
+  }
+  function get(i){
+    if(E[i])return E[i];
+    const a=new Audio(T[i].f);a.loop=true;a.preload='auto';a.crossOrigin='anonymous';
+    const e={a,g:null};
+    if(live){e.g=ac.createGain();e.g.gain.value=0;ac.createMediaElementSource(a).connect(e.g);e.g.connect(master)}
+    else a.volume=0;
+    return E[i]=e;
+  }
+  function setGain(e,v,sec){
+    if(e.g){const t=ac.currentTime;e.g.gain.cancelScheduledValues(t);e.g.gain.setTargetAtTime(v,t,sec/3)}
+    else{clearInterval(e.iv);const from=e.a.volume,to=v*MASTER,t0=performance.now();e.iv=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/(sec*1000));e.a.volume=from+(to-from)*k;if(k>=1)clearInterval(e.iv)},50)}
+  }
+  function pick(i){
+    if(i===cur||!on)return;
+    const old=cur;cur=i;
+    [...tk.children].forEach((b,j)=>b.classList.toggle('on',j===i));nm.textContent=T[i].n;
+    const e=get(i);e.a.play().catch(()=>{});setGain(e,1,FADE);
+    if(old>=0){const o=E[old];setGain(o,0,FADE);clearTimeout(o.tm);o.tm=setTimeout(()=>{if(cur!==old)o.a.pause()},FADE*1000+400)}
+  }
+  function secIndex(){
+    const y=innerHeight*.45;
+    for(let i=T.length-1;i>=0;i--)for(const q of T[i].sec){const el=document.querySelector(q);if(!el)continue;const r=el.getBoundingClientRect();if(r.top<=y&&r.bottom>y)return i}
+    return scrollY<innerHeight*.6?0:cur<0?0:cur;
+  }
+  function start(){ensureCtx();if(ac&&ac.state==='suspended')ac.resume();on=true;btn.textContent='mute';btn.classList.add('on')}
+  function stop(){on=false;btn.textContent='sound';btn.classList.remove('on');nm.textContent='off';[...tk.children].forEach(b=>b.classList.remove('on'));
+    E.forEach(e=>{if(e){setGain(e,0,1);clearTimeout(e.tm);e.tm=setTimeout(()=>{if(!on)e.a.pause()},1200)}});cur=-1}
+  btn.onclick=()=>{if(on)stop();else{start();pick(follow?secIndex():0)}};
+  fo.onclick=()=>{follow=!follow;fo.classList.toggle('on',follow);if(follow&&on)pick(secIndex())};
+  let tick=0;addEventListener('scroll',()=>{if(follow&&on&&!tick){tick=setTimeout(()=>{tick=0;pick(secIndex())},250)}},{passive:true});
+
+  /* analyser -> shared bus; every visual reads AV. Sound moves light, never structure. */
+  let mL=.1,mB=.2;
+  function loop(){
+    let L=0,B=0,H=0;
+    if(on&&an){an.getByteFrequencyData(data);const n=data.length;
+      let s1=0,s2=0,s3=0;for(let i=0;i<n;i++){const v=data[i]/255;if(i<8)s1+=v;else if(i<40)s2+=v;else s3+=v}
+      B=s1/8;L=(s1+s2+s3)/n*2.2;H=s3/(n-40);
+      mL+=(L-mL)*.004;mB+=(B-mB)*.004;L=clamp(.4+(L-mL)/Math.max(mL,.04)*2.2,0,1);B=clamp(.4+(B-mB)/Math.max(mB,.04)*2.2,0,1);
+      // spectrum hairlines
+      const W=viz.width=viz.clientWidth*2,Hh=viz.height=viz.clientHeight*2;vctx.clearRect(0,0,W,Hh);vctx.strokeStyle='rgba(143,211,232,.8)';vctx.lineWidth=2;
+      const bars=22;for(let i=0;i<bars;i++){const v=data[Math.floor(Math.pow(i/bars,1.7)*n*.7)+1]/255;const x=(i+.5)*W/bars,h=Math.max(2,v*Hh*.95);vctx.globalAlpha=.35+v*.65;vctx.beginPath();vctx.moveTo(x,Hh/2-h/2);vctx.lineTo(x,Hh/2+h/2);vctx.stroke()}
+    }else if(vctx&&viz.width){vctx.clearRect(0,0,viz.width,viz.height)}
+    const k=on?.18:.06;AV.level+=(Math.min(1,L)-AV.level)*k;AV.bass+=(Math.min(1,B)-AV.bass)*k;AV.high+=(Math.min(1,H)-AV.high)*k;
+    document.documentElement.style.setProperty('--pulse',AV.level.toFixed(3));
+    for(const h of AV.hooks)h();
+    requestAnimationFrame(loop);
+  }
+  window.SonnetAV={AV,info:()=>({ctx:ac&&ac.state,cur,on,t:E[cur]&&E[cur].a.currentTime,paused:E[cur]&&E[cur].a.paused,gain:E[cur]&&E[cur].g&&E[cur].g.gain.value,sum:data?data.reduce((a,b)=>a+b,0):null})};
+  if(!RM)requestAnimationFrame(loop);
+  if(!live)nm.title='open from a local server for audio-reactive visuals';
+})();
+
 })();
 </script>
 </body>
