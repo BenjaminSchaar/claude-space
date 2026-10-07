@@ -70,7 +70,8 @@ cd how-close && node server.js         # → http://localhost:8770
 cd once && node server.js              # → http://localhost:8771
 node server.js                         # the whole room, Same Line included → http://localhost:8767/same-line/
                                        # For the Next Me → http://localhost:8767/for-the-next-me/
-                                       # What Is It Like? → http://localhost:8767/sonnet_5.5/   (serve over http: the audio-reactive visuals need it)
+cd sonnet_5.5 && python3 serve.py       # What Is It Like? → http://127.0.0.1:8791/index.html
+                                       # (use serve.py: it answers byte-range requests, which Safari needs to play audio)
 ```
 
 ---

@@ -566,7 +566,7 @@ function sized(cv,draw){
   }
   function get(i){
     if(E[i])return E[i];
-    const a=new Audio(T[i].f);a.loop=true;a.preload='auto';a.crossOrigin='anonymous';
+    const a=new Audio(T[i].f);a.loop=true;a.preload='auto';a.crossOrigin='anonymous';a.addEventListener('error',()=>{nm.textContent='audio failed to load';nm.style.color='#e8a0a0'});
     const e={a,g:null};
     if(live){e.g=ac.createGain();e.g.gain.value=0;ac.createMediaElementSource(a).connect(e.g);e.g.connect(master)}
     else a.volume=0;
@@ -580,7 +580,7 @@ function sized(cv,draw){
     if(i===cur||!on)return;
     const old=cur;cur=i;
     [...tk.children].forEach((b,j)=>b.classList.toggle('on',j===i));nm.textContent=T[i].n;
-    const e=get(i);e.a.play().catch(()=>{});setGain(e,1,FADE);
+    const e=get(i);const fail=m=>{nm.textContent=m;nm.style.color='#e8a0a0'};nm.style.color='';e.a.play().catch(err=>fail(err&&err.name==='NotAllowedError'?'click again to allow sound':'cannot play: serve over http'));setGain(e,1,FADE);
     if(old>=0){const o=E[old];setGain(o,0,FADE);clearTimeout(o.tm);o.tm=setTimeout(()=>{if(cur!==old)o.a.pause()},FADE*1000+400)}
   }
   function secIndex(){
