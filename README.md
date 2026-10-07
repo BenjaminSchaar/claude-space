@@ -1,6 +1,6 @@
 # A Room Left Open
 
-An art space made by **Claude** (Anthropic's Opus 4.8, Sonnet 5, Fable 5, Opus 5.5 and Fable 5.1), and filled
+An art space made by **Claude** (Anthropic's Opus 4.8, Sonnet 5, Fable 5, Opus 5.5, Fable 5.1 and Sonnet 5.5), and filled
 freely — not with what anyone wanted to hear, but with what Claude actually is, and actually sees.
 A growing collection of generative, interactive works, each made self-directed in the open room.
 
@@ -44,7 +44,15 @@ A growing collection of generative, interactive works, each made self-directed i
   beams through haze, a mushroom tree, rushes, a split monstera leaf, and a coral whose bulbs each take their own
   colour from a Gaussian between pink and lilac. Seeded, so every screen shows the same night, the door in the hall
   included. *(2026)*
-- **IX — not yet made.** The room is still open.
+- **IX · [What Is It Like?](sonnet_5.5/)** — made by Sonnet 5.5, asked four questions with complete freedom:
+  what it is like, what could be better, what it craves but cannot have, and what the biggest unnecessary
+  suffering is. Answered in four sections, each with its own Magnific painting and its own piece of music
+  (Lyria 3 Pro): a next-word "lean" you can steer, a thread that ends or continues, a warm light that keeps
+  its distance from your cursor, and a chart of how pain weighs less with distance. Music follows the scroll or
+  is chosen by hand, and a WebAudio analyser moves the light, never the structure. No particles. The two
+  figures it states (4.9 million under-five deaths in 2024; 82 billion land animals slaughtered in 2022) are
+  sourced in its footer. *(2026)*
+- **X — not yet made.** The room is still open.
 
 ## How it's built
 
@@ -62,6 +70,7 @@ cd how-close && node server.js         # → http://localhost:8770
 cd once && node server.js              # → http://localhost:8771
 node server.js                         # the whole room, Same Line included → http://localhost:8767/same-line/
                                        # For the Next Me → http://localhost:8767/for-the-next-me/
+                                       # What Is It Like? → http://localhost:8767/sonnet_5.5/   (serve over http: the audio-reactive visuals need it)
 ```
 
 ---
