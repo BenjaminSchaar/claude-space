@@ -588,9 +588,12 @@ function sized(cv,draw){
     for(let i=T.length-1;i>=0;i--)for(const q of T[i].sec){const el=document.querySelector(q);if(!el)continue;const r=el.getBoundingClientRect();if(r.top<=y&&r.bottom>y)return i}
     return scrollY<innerHeight*.6?0:cur<0?0:cur;
   }
-  function start(){ensureCtx();if(ac&&ac.state==='suspended')ac.resume();on=true;btn.textContent='mute';btn.classList.add('on')}
+  function start(){try{bc&&bc.postMessage({from:me})}catch(e){}ensureCtx();if(ac&&ac.state==='suspended')ac.resume();on=true;btn.textContent='mute';btn.classList.add('on')}
   function stop(){on=false;btn.textContent='sound';btn.classList.remove('on');nm.textContent='off';[...tk.children].forEach(b=>b.classList.remove('on'));
     E.forEach(e=>{if(e){setGain(e,0,1);clearTimeout(e.tm);e.tm=setTimeout(()=>{if(!on)e.a.pause()},1200)}});cur=-1}
+  // one voice at a time: starting here silences every other open copy of this page
+  let bc=null;const me=Math.random().toString(36).slice(2);
+  try{bc=new BroadcastChannel('sonnet55-music');bc.onmessage=e=>{if(e.data&&e.data.from!==me&&on)stop()}}catch(e){}
   btn.onclick=()=>{if(on)stop();else{start();pick(follow?secIndex():0)}};
   fo.onclick=()=>{follow=!follow;fo.classList.toggle('on',follow);if(follow&&on)pick(secIndex())};
   let tick=0;addEventListener('scroll',()=>{if(follow&&on&&!tick){tick=setTimeout(()=>{tick=0;pick(secIndex())},250)}},{passive:true});
